@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-
 from graphviz import Digraph
+import json
+import queue
 
 class EG:
     green='forestgreen'
     red='firebrick3'
 
-    def __init__(self, name, format_str, dark=False):
+    def __init__(self, name, format_str, dark=False, json_file_name=None):
         self.arg_name = 'A'
         self.dark = dark
         self.format_str = format_str
@@ -24,6 +25,83 @@ class EG:
         if dark:
             self.graph.attr(bgcolor='gray15', fontcolor='white')
             self.graph.attr('node', fontcolor='white')
+
+        if (not json_file_name == None):
+            # data object that will store the json data for the belief
+            data = []
+
+            # opens the json and loads the info into data
+            with open("belief_data/" + json_file_name) as json_file:
+                data = json.load(json_file)
+
+            # adds the primary node to the graph
+            primary = self.node('none', data["arg_str"], [], primary=True)
+            # calls the link_graph method which adds the rest of the nodes
+            self.link_graph_depth(data["children"], primary)
+
+            # this chunk was for the breadth that i was testing
+            # node_queue = queue.SimpleQueue()
+            # for child in data["children"]:
+            #     node_queue.put(child)
+            # self.link_graph_depth(node_queue, data)
+
+            # calls the finish method and sets the title to the claim
+            self.finish(f'\nArguments For & Against:\n{data["arg_str"]}')
+
+    # this one names nodes in a depth first approach
+    def link_graph_depth(self, nodes_to_add, parent_node):
+        # base case
+        if (len(nodes_to_add) == 0):
+            return
+        else:
+            for node in nodes_to_add:
+                new_node = self.node(node["side"], node["arg_str"], parent_node)
+
+                self.link_graph_depth(node["children"], new_node)
+
+
+    # breadth doesn't work, can't figure it out.
+    # this one names nodes in a breadth first approach (the way blunaxela originally made it)
+    # add nodes to a queue, then process each one?
+    # def link_graph_breadth(self, nodes_to_add, parent_node):
+    #     # base case
+    #     if (len(nodes_to_add) == 0):
+    #         return
+    #     else:
+    #         node_queue = queue.SimpleQueue()
+    #         for node in nodes_to_add:
+    #             new_node = self.node(node["side"], node["arg_str"], parent_node)
+    #             node_queue.put(node)
+    #
+    #         while(not node_queue.empty()):
+    #             self.link_graph_breadth(node["children"], new_node)
+    #             node_queue.get()
+
+    # def link_graph_breadth(self, node_queue, primary_node):
+    #     previous_node = primary_node
+    #     print("prev node")
+    #     print(previous_node)
+    #
+    #     while(not node_queue.empty()):
+    #         current_node = node_queue.get()
+    #         print("this is the current node:")
+    #         print(current_node["arg_str"])
+    #
+    #         for child in current_node["children"]:
+    #             node_queue.put(child)
+    #
+    #         self.node(current_node["side"], current_node["arg_str"], previous_node)
+    #         previous_node = current_node
+    #
+    #
+    #         # while(not node_queue.empty()):
+    #         #     print(node_queue.get()["arg_str"])
+    #         #     print("XXXXXXXXXXXXXXXXXXXXXXXXX")
+
+
+
+
+
 
     def incr_chr(self, c):
         return chr(ord(c) + 1) if c != 'Z' else 'A'

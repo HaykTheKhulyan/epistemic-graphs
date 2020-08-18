@@ -1,0 +1,36 @@
+{
+  "arg_str": "Pigs can\"t fly.",
+  "side": "none",
+  "children": [
+    {
+      "arg_str": "I\"ve never seen a pig fly.",
+      "side": "for",
+      "children": [
+        {
+          "arg_str": "They only fly when you\"re not looking.",
+          "side": "against",
+          "children": [
+            {
+              "arg_str": "Seems hard or impossible to test. Is it not falsifiable?",
+              "side": "against",
+              "children": [
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "arg_str": "Pigs don\"t have wings.",
+      "side": "for",
+      "children": [
+        {
+          "arg_str": "There are other methods of flight or definitions of flying.",
+          "side": "against",
+          "children": [
+          ]
+        }
+      ]
+    }
+  ]
+}
